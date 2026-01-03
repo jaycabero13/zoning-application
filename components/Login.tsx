@@ -3,7 +3,7 @@ import React from 'react';
 import { PANABO_LOGO } from '../constants';
 import { loginUser, registerUser } from '../services/dbService';
 import { User } from '../types';
-import { Lock, User as UserIcon, Eye, EyeOff, Loader2, ArrowRight, UserPlus } from 'lucide-react';
+import { Lock, User as UserIcon, Eye, EyeOff, Loader2, ArrowRight, ShieldCheck } from 'lucide-react';
 
 interface LoginProps {
   onLoginSuccess: (user: User) => void;
@@ -28,7 +28,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
         if (newUser) {
           onLoginSuccess(newUser);
         } else {
-          setError('Username already exists');
+          setError('Username already exists in the CPDO database');
           setIsLoading(false);
         }
       } else {
@@ -36,7 +36,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
         if (user) {
           onLoginSuccess(user);
         } else {
-          setError('Invalid credentials');
+          setError('Invalid government officer credentials');
           setIsLoading(false);
         }
       }
@@ -44,69 +44,82 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-amber-400 rounded-full blur-[120px]" />
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#f8fafc] relative overflow-hidden">
+      {/* Official Top Bar */}
+      <div className="absolute top-0 w-full bg-[#0f172a] text-white py-2 px-4 flex justify-center items-center gap-4 text-[10px] font-bold uppercase tracking-[0.3em] z-50">
+        <span className="opacity-60">Republic of the Philippines</span>
+        <span className="w-1.5 h-1.5 bg-white/20 rounded-full"></span>
+        <span>City Government of Panabo</span>
       </div>
 
-      <div className="w-full max-w-md p-4 relative z-10 animate-in fade-in zoom-in duration-500">
-        <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
-          <div className="p-10">
-            <div className="flex flex-col items-center mb-10 text-center">
-              <div className="bg-white p-3 rounded-2xl shadow-lg mb-6 ring-1 ring-slate-100 scale-125">
-                {PANABO_LOGO}
-              </div>
-              <h1 className="text-2xl font-black text-slate-900 tracking-tight mb-2">
-                {isRegistering ? 'Create Admin Account' : 'Staff Zoning Portal'}
-              </h1>
-              <p className="text-slate-500 text-sm font-medium">City Planning & Development Office</p>
-            </div>
+      {/* Modern Background Gradients */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-40">
+        <div className="absolute top-[-15%] right-[-10%] w-[70%] h-[70%] bg-green-500/10 rounded-full blur-[140px]"></div>
+        <div className="absolute bottom-[-15%] left-[-10%] w-[70%] h-[70%] bg-blue-600/10 rounded-full blur-[140px]"></div>
+      </div>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+      <div className="w-full max-w-lg p-6 relative z-10 animate-in fade-in zoom-in duration-1000">
+        <div className="text-center mb-12 flex flex-col items-center">
+          {/* Centered Logo Container */}
+          <div className="mb-10 transform hover:scale-105 transition-transform duration-700 bg-white p-6 rounded-[3rem] shadow-2xl border border-white/50 inline-block">
+            <PANABO_LOGO className="w-48 h-48 md:w-56 md:h-56" />
+          </div>
+          
+          <div className="space-y-2">
+            <h1 className="text-4xl md:text-5xl font-[1000] text-slate-900 tracking-tighter leading-none">
+              Lungsod ng Panabo
+            </h1>
+            <p className="text-green-700 text-xs font-black uppercase tracking-[0.4em] flex items-center justify-center gap-3">
+              <ShieldCheck size={14} className="opacity-60" />
+              Planning & Zoning Portal
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-[3.5rem] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.12)] border border-white overflow-hidden relative group">
+          <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-600 via-yellow-400 to-blue-600"></div>
+          
+          <div className="p-10 md:p-14">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Username</label>
-                <div className="relative group">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-blue-600">
-                    <UserIcon size={18} />
-                  </div>
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Official Username</label>
+                <div className="relative">
+                  <UserIcon className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 transition-colors group-focus-within:text-green-600" size={20} />
                   <input
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Enter username"
-                    className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none transition-all font-bold focus:ring-4 focus:ring-blue-50 focus:border-blue-500"
+                    placeholder="e.g. j_delacruz_cpdo"
+                    className="w-full pl-14 pr-6 py-5 bg-slate-50 border border-slate-100 rounded-[1.75rem] outline-none font-bold text-slate-800 focus:ring-8 focus:ring-green-50 focus:border-green-500 transition-all text-sm"
                     required
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Password</label>
-                <div className="relative group">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-blue-600">
-                    <Lock size={18} />
-                  </div>
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Secure Password</label>
+                <div className="relative">
+                  <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 transition-colors group-focus-within:text-green-600" size={20} />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full pl-12 pr-12 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none transition-all font-bold focus:ring-4 focus:ring-blue-50 focus:border-blue-500"
+                    className="w-full pl-14 pr-14 py-5 bg-slate-50 border border-slate-100 rounded-[1.75rem] outline-none font-bold text-slate-800 focus:ring-8 focus:ring-green-50 focus:border-green-500 transition-all text-sm"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-600 transition-colors"
                   >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
               </div>
 
               {error && (
-                <div className="p-3 bg-rose-50 text-rose-600 rounded-xl text-[10px] font-black uppercase tracking-widest text-center animate-shake">
+                <div className="p-4 bg-rose-50 border border-rose-100 text-rose-600 rounded-2xl text-[11px] font-black uppercase tracking-widest text-center animate-shake">
                   {error}
                 </div>
               )}
@@ -114,14 +127,14 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-slate-900 text-white py-4 rounded-2xl font-black flex items-center justify-center gap-2 transition-all hover:bg-slate-800 hover:shadow-xl active:scale-95 disabled:opacity-70 group"
+                className="w-full h-16 bg-slate-900 text-white rounded-[1.75rem] font-black text-xs uppercase tracking-[0.25em] flex items-center justify-center gap-4 transition-all hover:bg-green-700 hover:shadow-3xl active:scale-[0.98] disabled:opacity-50 group"
               >
                 {isLoading ? (
-                  <Loader2 className="animate-spin" size={20} />
+                  <Loader2 className="animate-spin" size={24} />
                 ) : (
                   <>
-                    {isRegistering ? 'Register Now' : 'Access System'}
-                    <ArrowRight className="transition-transform group-hover:translate-x-1" size={18} />
+                    <span>{isRegistering ? 'Register Officer' : 'Authorize Access'}</span>
+                    <ArrowRight size={20} className="group-hover:translate-x-1.5 transition-transform" />
                   </>
                 )}
               </button>
@@ -132,16 +145,19 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                   setIsRegistering(!isRegistering);
                   setError(null);
                 }}
-                className="w-full text-blue-600 text-xs font-bold hover:underline"
+                className="w-full text-slate-400 text-[10px] font-black uppercase tracking-widest hover:text-green-600 transition-colors py-2"
               >
-                {isRegistering ? 'Already have an account? Sign In' : 'New officer? Create an account'}
+                {isRegistering ? 'Already Registered? Secure Sign-in' : 'Request Administrative Account'}
               </button>
             </form>
           </div>
-          <div className="bg-slate-50 py-4 px-10 border-t border-slate-100 flex justify-between items-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
-            <span>Secure Access</span>
-            <span>V1.3.0</span>
-          </div>
+        </div>
+
+        <div className="mt-16 text-center opacity-40 hover:opacity-100 transition-opacity">
+          <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.5em] leading-[2.5]">
+            Authorized Access Restricted<br/>
+            to City Planning Officials
+          </p>
         </div>
       </div>
     </div>

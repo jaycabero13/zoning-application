@@ -3,7 +3,10 @@ export enum ZoneType {
   COMMERCIAL = 'Commercial',
   AGRICULTURAL = 'Agricultural',
   RESIDENTIAL = 'Residential',
-  INDUSTRIAL = 'Industrial'
+  INDUSTRIAL = 'Industrial',
+  AGRO_INDUSTRIAL = 'Agro-Industrial',
+  MANGROVE_PROTECTION = 'Mangrove Protection',
+  INSTITUTIONAL = 'Institutional'
 }
 
 export enum SexType {
@@ -14,6 +17,7 @@ export enum SexType {
 
 export enum ApprovalStatus {
   PENDING = 'Pending',
+  TECHNICAL_REVIEW = 'Under Technical Review',
   APPROVED = 'Approved',
   DISAPPROVED = 'Disapproved'
 }
@@ -21,13 +25,13 @@ export enum ApprovalStatus {
 export interface User {
   id: string;
   username: string;
-  password: string; // In a real app, this would be hashed
+  password: string;
   createdAt: string;
 }
 
 export interface Applicant {
   id: string;
-  userId: string; // The ID of the user who owns this data
+  userId: string;
   name: string;
   sex: SexType;
   address: string;

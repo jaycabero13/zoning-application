@@ -2,13 +2,16 @@
 import React from 'react';
 import { ApprovalStatus, ZoneType, SexType } from './types';
 
-// Updated to use the Official Panabo City Seal
-export const PANABO_LOGO = (
-  <img 
-    src="https://upload.wikimedia.org/wikipedia/commons/8/8d/Seal_of_Panabo.svg" 
-    alt="Panabo City Seal" 
-    className="w-12 h-12 object-contain"
-  />
+// Using a high-resolution PNG version of the official seal for maximum compatibility
+export const PANABO_LOGO = ({ className = "w-12 h-12" }: { className?: string }) => (
+  <div className={`${className} flex items-center justify-center`}>
+    <img 
+      src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Seal_of_Panabo.svg/1024px-Seal_of_Panabo.svg.png" 
+      alt="Official Seal of Panabo City" 
+      className="max-w-full max-h-full object-contain drop-shadow-[0_10px_10px_rgba(0,0,0,0.15)]"
+      loading="eager"
+    />
+  </div>
 );
 
 export const APP_STORAGE_KEY = 'panabo_zoning_applicants';

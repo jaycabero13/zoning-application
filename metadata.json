@@ -1,7 +1,5 @@
 {
-  "name": "Panabo City Zoning Management System",
-  "description": "A comprehensive web-based application for the City Planning Office to manage applicants, track zoning areas, and visualize planning data with AI-assisted insights.",
-  "requestFramePermissions": [
-    "camera"
-  ]
+  "name": "Lungsod ng Panabo - Official Zoning System",
+  "description": "Secure administrative portal for the City Planning and Development Office (CPDO) of Panabo City. Features GIS-integrated applicant tracking and AI-driven land use analysis.",
+  "requestFramePermissions": []
 }
