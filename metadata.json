@@ -1,0 +1,7 @@
+{
+  "name": "Panabo City Zoning Management System",
+  "description": "A comprehensive web-based application for the City Planning Office to manage applicants, track zoning areas, and visualize planning data with AI-assisted insights.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
