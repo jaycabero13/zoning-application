@@ -1,8 +1,9 @@
 
 import { Applicant, ApprovalStatus, User } from '../types';
-import { APP_STORAGE_KEY, INITIAL_DATA } from '../constants';
+import { APP_STORAGE_KEY } from '../constants';
 
 const USERS_KEY = 'panabo_zoning_users';
+const EXPIRY_DAYS = 12;
 
 export const getUsers = (): User[] => {
   const data = localStorage.getItem(USERS_KEY);
@@ -32,8 +33,30 @@ export const loginUser = (username: string, password: string): User | null => {
 
 export const getApplicants = (userId: string): Applicant[] => {
   const data = localStorage.getItem(APP_STORAGE_KEY);
-  const all: Applicant[] = data ? JSON.parse(data) : [];
-  // Return only data belonging to this specific user
+  let all: Applicant[] = data ? JSON.parse(data) : [];
+  
+  const now = new Date();
+  let hasChanges = false;
+
+  // Process Automatic Expiry Logic (12-Day Rule)
+  const updatedAll = all.map(applicant => {
+    const regDate = new Date(applicant.registrationDate);
+    const diffTime = now.getTime() - regDate.getTime();
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+    if (diffDays > EXPIRY_DAYS && 
+        (applicant.status === ApprovalStatus.PENDING || applicant.status === ApprovalStatus.TECHNICAL_REVIEW)) {
+      hasChanges = true;
+      return { ...applicant, status: ApprovalStatus.EXPIRED };
+    }
+    return applicant;
+  });
+
+  if (hasChanges) {
+    localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(updatedAll));
+    all = updatedAll;
+  }
+
   return all.filter(a => a.userId === userId);
 };
 
@@ -57,6 +80,13 @@ export const updateApplicantStatus = (id: string, status: ApprovalStatus): void 
   const data = localStorage.getItem(APP_STORAGE_KEY);
   const all: Applicant[] = data ? JSON.parse(data) : [];
   const updated = all.map(a => a.id === id ? { ...a, status } : a);
+  localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(updated));
+};
+
+export const updateApplicantDetails = (id: string, updates: Partial<Applicant>): void => {
+  const data = localStorage.getItem(APP_STORAGE_KEY);
+  const all: Applicant[] = data ? JSON.parse(data) : [];
+  const updated = all.map(a => a.id === id ? { ...a, ...updates } : a);
   localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(updated));
 };
 

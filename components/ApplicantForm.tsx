@@ -5,7 +5,7 @@ import { saveApplicant } from '../services/dbService';
 import { getZoningAdvice } from '../services/geminiService';
 import { 
   CheckCircle2, AlertCircle, Sparkles, Loader2, Home, MapPin, 
-  User as UserIcon, Ruler, ShieldAlert, FileCheck 
+  User as UserIcon, Ruler, ShieldAlert, FileCheck, Calendar, Clock
 } from 'lucide-react';
 
 interface ApplicantFormProps {
@@ -18,6 +18,7 @@ interface FormErrors {
   address?: string;
   zoneLocation?: string;
   area?: string;
+  registrationDate?: string;
   consent?: string;
 }
 
@@ -29,6 +30,7 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ userId, onSuccess }) => {
     zone: ZoneType.RESIDENTIAL,
     zoneLocation: '',
     area: '',
+    registrationDate: new Date().toISOString().slice(0, 16), // Default to current time
     consent: false
   });
 
@@ -43,6 +45,7 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ userId, onSuccess }) => {
     if (!formData.address.trim()) newErrors.address = 'Home address is required';
     if (!formData.zoneLocation.trim()) newErrors.zoneLocation = 'Proposed site location is required';
     if (!formData.area || Number(formData.area) <= 0) newErrors.area = 'A valid positive area is required';
+    if (!formData.registrationDate) newErrors.registrationDate = 'Registration date/time is mandatory';
     if (!formData.consent) newErrors.consent = 'Citizen consent for data processing is mandatory (RA 10173)';
     
     setErrors(newErrors);
@@ -67,7 +70,8 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ userId, onSuccess }) => {
         ...formData,
         area: Number(formData.area),
         sex: formData.sex as SexType,
-        zone: formData.zone as ZoneType
+        zone: formData.zone as ZoneType,
+        registrationDate: new Date(formData.registrationDate).toISOString()
       });
       setStatus('success');
       setTimeout(() => onSuccess(), 1500);
@@ -141,14 +145,27 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ userId, onSuccess }) => {
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Sex Type</label>
-                <select 
-                  className="w-full px-6 py-5 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold text-slate-800 cursor-pointer"
-                  value={formData.sex} onChange={e => setFormData({...formData, sex: e.target.value as SexType})}
-                >
-                  {Object.values(SexType).map(v => <option key={v} value={v}>{v}</option>)}
-                </select>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Sex Type</label>
+                  <select 
+                    className="w-full px-6 py-5 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold text-slate-800 cursor-pointer"
+                    value={formData.sex} onChange={e => setFormData({...formData, sex: e.target.value as SexType})}
+                  >
+                    {Object.values(SexType).map(v => <option key={v} value={v}>{v}</option>)}
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1.5"><Calendar size={12}/> Reg. Timestamp</label>
+                  <input 
+                    type="datetime-local" 
+                    className={`w-full px-4 py-5 bg-slate-50 border rounded-2xl outline-none font-bold text-slate-800 transition-all text-xs ${
+                      errors.registrationDate ? 'border-rose-400 ring-4 ring-rose-50' : 'border-slate-100 focus:ring-4 focus:ring-emerald-50'
+                    }`}
+                    value={formData.registrationDate} 
+                    onChange={e => {setFormData({...formData, registrationDate: e.target.value}); if(errors.registrationDate) setErrors({...errors, registrationDate: undefined});}}
+                  />
+                </div>
               </div>
             </div>
           </div>

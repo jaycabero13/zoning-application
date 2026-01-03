@@ -19,7 +19,8 @@ export enum ApprovalStatus {
   PENDING = 'Pending',
   TECHNICAL_REVIEW = 'Under Technical Review',
   APPROVED = 'Approved',
-  DISAPPROVED = 'Disapproved'
+  DISAPPROVED = 'Disapproved',
+  EXPIRED = 'Expired (Auto-Disapproved)'
 }
 
 export interface User {
@@ -39,6 +40,10 @@ export interface Applicant {
   zoneLocation: string;
   area: number;
   status: ApprovalStatus;
+  registrationDate: string; // The official date/time for the 12-day window
+  releaseDate?: string;      // Optional release date
+  paymentDate?: string;      // Optional payment date
+  paymentAmount?: number;    // Optional payment amount
   createdAt: string;
 }
 
